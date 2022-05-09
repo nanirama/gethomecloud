@@ -17,7 +17,9 @@ const Innovarors = ({data}) => {
                     <Logos>
                         {items && items.map((item, index)=>{
                             return(
+                                <LogoItem>
                                 <GatsbyImage key={index} image={getImage(item.innovator_logo)} />
+                                </LogoItem>
                             )
                         })}
                     </Logos>
@@ -53,21 +55,31 @@ padding: 0 15px;
  
  `
 const Logos = styled.div`
-  display: grid;
-  grid-template-columns: 33% 33% 33%;
-  grid-gap: 30px;margin:50px 0px;
-  @media (max-width:767px) {
-    grid-template-columns: 45% 45%;
-    margin:5px 5%;
-  }
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    margin:50px 0px;
+    flex-direction: row;
+    justify-content: center;
+
   @media (max-width:479px) {
-    grid-template-columns: 100%;
+    flex-direction: column;
     & > .gatsby-image-wrapper{
         margin:5px 25px;
     }
   }
  `
-
+const LogoItem = styled.div`
+width: 33%;
+@media (max-width:767px) {
+width:45%;
+margin:5px 5%;
+}
+& > .gatsby-image-wrapper{
+    margin:6px 25px;
+}
+`
 const Button = styled.div`
 display:flex;justify-content: center;
 `
