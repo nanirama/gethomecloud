@@ -21,7 +21,7 @@ const Benifits = ({data}) => {
                         { items && items.map((item, index)=> <BenefitItem key={index} data={item} />)}
                     </Grid>
                     <Button>     
-                    <Link className="btn" to="/get-started">Get Started</Link>
+                    <Link className="btn" to="/realtor-contact/">Get Started</Link>
                     </Button>
                 </Container>
             </BenifitsOuter>

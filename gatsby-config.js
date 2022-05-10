@@ -135,7 +135,16 @@ module.exports = {
       options: {
         domains: ['https://www.googletagmanager.com', 'https://js.intercomcdn.com', 'https://js.intercomcdn.com'],
       },
-    }, 
+    },    
+    {
+      resolve: `gatsby-plugin-fastify`,
+      options: {
+        features: {
+          redirects: true,
+          reverseProxy: true,
+        },
+      },
+    },
     {
       resolve: `gatsby-plugin-gatsby-cloud`,
       options: {

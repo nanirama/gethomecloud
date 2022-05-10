@@ -68,6 +68,10 @@ const Footer = () => {
                            <Link to="/blog/">
                            Blog</Link>
                         </li>
+                        <li>
+                           <Link to="/agent/">
+                           For Realtors</Link>
+                        </li>
                      </Links>
                   </FooterLinks>
                </Item>
