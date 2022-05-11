@@ -219,7 +219,7 @@ const RealtorFormIndex = ({ setFormStep, onHide }) => {
                                             <textarea id="more_details" name="more_details" onChange={e => setMoredetails(e.target.value)} />
                                             <FormBtn>
                                                 <button type="submit" value="Submit" className="btn"
-                                                // disabled={isSubmitting}
+                                                disabled={isSubmitting}
                                                 >Submit</button>
                                             </FormBtn>
                                         </form>

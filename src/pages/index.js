@@ -14,7 +14,6 @@ import { BrowserView, TabletView, MobileView } from "react-device-detect"
 import styled from "styled-components"
 
 const IndexPage = (props) => {
-  console.log('Props', props)
   const { data } = props
   const { PageData, site, SiteLogo, HowItWorks, OurBenefits } = data
 

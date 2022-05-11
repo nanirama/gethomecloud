@@ -4,7 +4,6 @@ import styled from "styled-components";
 import DigitizeMyHome from "../popups/DigitizeMyHome"
 
 const Howitwork = ({data}) => {
-   console.log('how it works', data)
    const { primary, items } = data[0]
     return(
     <Wrapper id="howitworks">

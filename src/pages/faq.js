@@ -7,7 +7,6 @@ import FaqSection from "../components/faq/FaqSection";
 const Faq = (props) => {
   const title = 'Home Cloud Faq'
   const desc = 'Home Cloud Meta Desccription'
-  console.log('Props', props)
   return(
     <Layout>
       <SEO

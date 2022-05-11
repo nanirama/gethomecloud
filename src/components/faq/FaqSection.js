@@ -29,7 +29,6 @@ const { FaqData } = useStaticQuery(
       }
    `
 )
-console.log('All Data', FaqData)
 const [activeEventKey, setActiveEventKey] = useState(null);
 const [activeIndexKey, setActiveIndexKey] = useState(0);
 const onClickHandler = (val)=>{

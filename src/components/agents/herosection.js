@@ -8,7 +8,6 @@ import styled from "styled-components";
 const HeroSection = ({data}) => {
     const { primary } = data
     const { hero_section_content, button_text, button_link, hero_image } = primary
-    console.log('hero data', primary)
     return (
         <BannerBlk>
             <GatsbyImage image={getImage(hero_image)} />
