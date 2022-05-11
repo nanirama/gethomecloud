@@ -107,7 +107,7 @@ const Header = ({page}) => {
                     {page==='home' ? <AnchorLink href='#whatsincluded' onClick={e=>setOpen(false)}>What’s Included</AnchorLink> : <Link to='/#whatsincluded'>What’s Included</Link>}
                  </li>
                  <li>
-                    <Link to='/agent/'>For Agents</Link>
+                    <Link to='/realtor/'>For Realtors</Link>
                  </li>
                  <li>
                     <a href="https://app.gethomecloud.com/" target="_blank">

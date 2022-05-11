@@ -69,7 +69,7 @@ const Footer = () => {
                            Blog</Link>
                         </li>
                         <li>
-                           <Link to="/agent/">
+                           <Link to="/realtor/">
                            For Realtors</Link>
                         </li>
                      </Links>

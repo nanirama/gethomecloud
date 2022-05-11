@@ -1,115 +1,239 @@
-import React, { useState, useEffect }  from "react"
+import React, { useState, useEffect } from "react"
+import Select from "react-select";
 import { useForm } from "react-hook-form";
+import { Field, Formik } from 'formik';
+import * as yup from 'yup';
 import { navigate } from "gatsby";
 import axios from "axios";
 import styled from 'styled-components';
-const WaitlistForm = ({setFormStep, onHide }) => {
-const { register, handleSubmit, formState: { errors } } = useForm();
-const [isSubmitting, setIsSubmitting] = useState(false);
-const [serverState, setServerState] = useState({
-submitting: false,
-status: null
-});
-useEffect(
-() => {
-console.log('serverState',isSubmitting)
-},
-[serverState, isSubmitting],
-)
-const handleServerResponse = (ok, msg, form) => {
-setServerState({
-submitting: false,
-status: { ok, msg }
-});
-if (ok) {
-    //e.reset();
+const RealtorFormIndex = ({ setFormStep, onHide }) => {
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const [selectedValues, setSelectedValues] = useState([]);
+    const [hearaboutUs, setHearaboutUs] = useState('');
+    const [moredetails, setMoredetails] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [serverState, setServerState] = useState({
+        submitting: false,
+        status: null
+    });
+
+    const options = [
+        { value: 'Learn more about partership', label: 'Learn more about partership' },
+        { value: 'Schedule a home certification for my buyer', label: 'Schedule a home certification for my buyer' },
+        { value: 'Schedule a home certification for my seller', label: 'Schedule a home certification for my seller' },
+        { value: 'Schedule a walk through certification', label: 'Schedule a walk through certification' },
+        { value: 'Join your mailing list', label: 'Join your mailing list' },
+    ]
+
+    const initialValues = {
+        firstname: '',
+        lastname: '',
+        email: '',
+        how_you_hear_about_us: '',
+        phone: undefined,
+        more_details: ''
+    }
+
+    const validationSchema = yup.object().shape({
+        firstname: yup
+            .string()
+            .required('Please enter your First Name'),
+        lastname: yup
+            .string()
+            .required('Please enter your Last Name'),
+        email: yup
+            .string()
+            .email('Email should be in the format username@domain.com')
+            .required("Email is required"),
+        phone: yup.string()
+            .required('Please enter a valid phone number')
+
+    });
+
+    useEffect(
+        () => {
+            console.log('moredetails', moredetails)
+        },
+        [serverState, isSubmitting, selectedValues, hearaboutUs, moredetails],
+    )
+    const handleServerResponse = (ok, msg, form) => {
+        setServerState({
+            submitting: false,
+            status: { ok, msg }
+        });
+        if (ok) {
+            //e.reset();
+        }
+    };
+
+    const submitForm = (e) => {
+        setIsSubmitting(true)
+        e.how_can_we_help = selectedValues.join(", ");
+        e.how_you_hear_about_us = hearaboutUs
+        e.more_details = moredetails
+        setServerState({ submitting: true });
+        axios({
+            method: "post",
+            url: "https://getform.io/f/7ca828e5-5c72-4e2b-a9c3-58502d184fb8",
+            data: e
+        })
+            .then(r => {
+                handleServerResponse(true, "Thanks!");
+                navigate("/agent-confirm/")
+            })
+            .catch(r => {
+                handleServerResponse(false, r)
+            });
+    };
+    const handleSelectChange = (selectedOptions) => {
+        const newArray = selectedOptions.map((item) => {
+            return item.value
+        })
+        setSelectedValues(newArray);
+    }
+    return (
+        <Wrapper id="howitworks">
+            <Container>
+                <FormOuter>
+                    <h4>Realtor Contact Form</h4>
+                    <TextBlock>
+                        <p>Please provide your information below and we’ll get in touch!</p>
+                    </TextBlock>
+                    <FormBlk>
+                        <FormInner>
+                            <Formik
+                                initialValues={initialValues}
+                                validationSchema={validationSchema}
+                                onSubmit={e => submitForm(e)}
+                            >
+                                {(formik) => {
+                                    const {
+                                        values,
+                                        touched,
+                                        errors,
+                                        dirty,
+                                        isSubmitting,
+                                        handleChange,
+                                        handleBlur,
+                                        handleSubmit,
+                                        handleReset
+                                    } = formik;
+                                    return (
+                                        <form onSubmit={handleSubmit}>
+
+                                            <label>Your First Name*</label>
+                                            <Field
+                                                name="firstname"
+                                                value={values.firstname}
+                                                render={({ field, form }) => (
+                                                    <input
+                                                        className={errors.firstname && touched.firstname && 'error'}
+                                                        aria-labelledby="firstname"
+                                                        type="text"
+                                                        id="firstname"
+                                                        name="firstname"
+                                                        value={values.firstname}
+                                                        placeholder="Your First Name"
+                                                        onChange={e => {
+                                                            handleChange(e);
+
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                            <label>Your Last Name*</label>
+                                            <Field
+                                                name="lastname"
+                                                value={values.lastname}
+                                                render={({ field, form }) => (
+                                                    <input
+                                                        className={errors.lastname && touched.lastname && 'error'}
+                                                        aria-labelledby="lastname"
+                                                        type="text"
+                                                        id="lastname"
+                                                        name="lastname"
+                                                        value={values.lastname}
+                                                        placeholder="Your Last Name"
+                                                        onChange={e => {
+                                                            handleChange(e);
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                            <label>Your Email Address*</label>
+                                            <input
+                                                className={errors.email && touched.email && 'error'}
+                                                type="email"
+                                                name="email"
+                                                id="email"
+                                                value={values.email}
+                                                onChange={e => {
+                                                    handleChange(e)
+                                                }}
+                                                placeholder="Email"
+                                                aria-labelledby="email"
+                                            />
+                                            <label>Phone Number*</label>
+                                            <input
+                                                className={errors.phone && touched.phone && 'error'}
+                                                aria-labelledby="phone"
+                                                type="tel"
+                                                name="phone"
+                                                pattern="[0-9]*"
+                                                placeholder='Phone'
+                                                id="phone"
+                                                value={values.phone}
+                                                onChange={e => {
+                                                    handleChange(e);
+                                                }}
+
+                                            />
+                                            <label>How can we help?*</label>
+                                            <Select
+                                                isMulti
+                                                id="how_can_we_help"
+                                                name="how_can_we_help"
+                                                placeholder="Select all that apply"
+                                                options={options}
+                                                aria-label="how_can_we_help"
+                                                aria-labelledby="how_can_we_help"
+                                                onChange={handleSelectChange}
+                                            />
+                                            <label>How did you hear about us?*</label>
+                                            <select
+                                                id="how_you_hear_about_us"
+                                                name="how_you_hear_about_us"
+                                                onChange={e => setHearaboutUs(e.target.value)}>
+                                                <option>Select</option>
+                                                <option value="Real estate agent referral">Real estate agent referral</option>
+                                                <option value="My Client told me">My Client told me</option>
+                                                <option value="Saw a HomeCloud Certified Listing">Saw a HomeCloud Certified Listing</option>
+                                                <option value="Buyer used HomeCloud on home I sold">Buyer used HomeCloud on home I sold</option>
+                                                <option value="Online News Coverage">Online News Coverage</option>
+                                                <option value="Google">Google</option>
+                                                <option value="Yelp">Yelp</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+
+                                            <label>More details on how you heard about us</label>
+                                            <textarea id="more_details" name="more_details" onChange={e => setMoredetails(e.target.value)} />
+                                            <FormBtn>
+                                                <button type="submit" value="Submit" className="btn"
+                                                // disabled={isSubmitting}
+                                                >Submit</button>
+                                            </FormBtn>
+                                        </form>
+                                    );
+                                }}
+                            </Formik>
+                        </FormInner>
+                    </FormBlk>
+                </FormOuter>
+            </Container>
+        </Wrapper>
+    );
 }
-};
-const onSubmit = (data,e) => {
-setIsSubmitting(true)
-const form = e.target;
-setServerState({ submitting: true });
-axios({
-method: "post",
-url: "https://getform.io/f/7ca828e5-5c72-4e2b-a9c3-58502d184fb8",
-data: new FormData(form)
-})
-.then(r => {
-handleServerResponse(true, "Thanks!", form);
-navigate("/agent-confirm/")
-})
-.catch(r => {
-    handleServerResponse(false, r, form)
-});
-};
-return(
-<Wrapper id="howitworks">
-<Container>
-   <FormOuter>
-   <h4>Realtor Contact Form</h4>
-   <TextBlock>
-      <p>Please provide your information below and we’ll get in touch!</p>
-   </TextBlock>
-   <FormBlk>
-      <FormInner>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <label>Your First Name*</label>
-            <input type="text" name="firstname" id="firstname" placeholder="John"
-            {...register("firstname", { required: true })} className={errors.firstname && `error`} 
-            />
-            <label>Your Last Name*</label>
-            <input type="text" name="lastname" id="lastname" placeholder="Doe"
-            {...register("lastname", { required: true })} className={errors.lastname && `error`} 
-            />
-            <label>Your Email Address*</label>
-            <input type="text" id="email" name="email" placeholder="johndoe@gmail.com"
-            {...register("email", { required: true })} className={errors.email && `error`}
-            />
-            <label>Phone Number*</label>
-            <input type="text" name="phone" id="phone" placeholder="###-###-####"
-            {...register("phone", { required: true })} className={errors.phone && `error`} 
-            />
-            <label>How can we help?*</label>
-            <select id="how_can_we_help" name="how_can_we_help"
-            {...register("how_can_we_help", { required: true })} className={errors.how_can_we_help && `error`} 
-            >
-                <option value="Learn more about partership">Learn more about partership</option>
-                <option value="Schedule a home certification for my buyer">Schedule a home certification for my buyer</option>
-                <option value="Schedule a home certification for my seller">Schedule a home certification for my seller</option>
-                <option value="Schedule a walk through certification">Schedule a walk through certification</option>
-                <option value="Join your mailing list">Join your mailing list</option>                
-            </select>
-            
-            <label>How did you hear about us?*</label>
-            <select id="how_you_hear_about_us" name="how_you_hear_about_us"
-            {...register("how_you_hear_about_us", { required: true })} className={errors.how_you_hear_about_us && `error`} 
-            >
-                <option value="Real estate agent referral">Real estate agent referral</option>
-                <option value="My Client told me">My Client told me</option>
-                <option value="Saw a HomeCloud Certified Listing">Saw a HomeCloud Certified Listing</option>
-                <option value="Buyer used HomeCloud on home I sold">Buyer used HomeCloud on home I sold</option>
-                <option value="Online News Coverage">Online News Coverage</option>
-                <option value="Google">Google</option>
-                <option value="Yelp">Yelp</option>
-                <option value="Other">Other</option>                
-            </select>
-            
-            <label>More details on how you heard about us</label>
-            <textarea id="more_details" name="more_details" 
-            // {...register("agent_email", { required: true })} className={errors.agent_email && `error`} 
-            />
-            <FormBtn>
-               <input type="submit" value="Submit" className="btn" disabled={isSubmitting}/>
-            </FormBtn>
-         </form>
-      </FormInner>
-   </FormBlk>
-   </FormOuter>
-   </Container>
-</Wrapper>
-);
-}
-export default WaitlistForm;
+export default RealtorFormIndex;
 
 const Wrapper = styled.div`
 padding:130px 0 80px 0;
@@ -178,6 +302,18 @@ svg.closebtn{
     font-style: normal;
     margin:0;
 }
+#how_can_we_help{
+    width: 100%;
+    line-height: 30px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    color: #6C7884;
+    font-size: 14px;
+    font-style:italic; 
+    .css-1s2u09g-control{
+        border: 1px solid #DDE1E9;
+    } 
+}
 input{
     border: 1px solid #DDE1E9;
     width: 100%;
@@ -201,7 +337,7 @@ textarea{
     font-size: 14px;
     font-style:italic;
 }
-input.error, .error, input:focus, .error:focus-visible{
+input.error, .error, .error:focus-visible{
     border: 2px solid #DB4343 !important;
     box-sizing: border-box !important;
  }
@@ -223,6 +359,8 @@ select{
     background-color: transparent;
 }
 `;
+const ErrorLabel = styled.div`
+`
 const TextBlock = styled.div`
 width:100%;
 text-align:center !important;
